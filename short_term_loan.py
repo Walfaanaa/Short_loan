@@ -1,10 +1,14 @@
 import streamlit as st
 from PIL import Image
+import requests
 
 # =======================
 # Top Center Logo
 # =======================
-logo = Image.open(r"C:\Users\walfaanaam\Desktop\Short_term_loan\EGSA.png")
+logo_url = "https://raw.githubusercontent.com/Walfaanaa/Short_loan/main/EGSA.png"
+response = requests.get(logo_url, stream=True)
+logo = Image.open(response.raw)
+
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image(logo, width=180)
