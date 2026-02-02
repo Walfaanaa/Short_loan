@@ -9,11 +9,12 @@ logo_url = "https://raw.githubusercontent.com/Walfaanaa/Short_loan/main/EGSA.png
 response = requests.get(logo_url, stream=True)
 logo = Image.open(response.raw)
 
-col1, col2, col3 = st.columns([1, 2, 1])
+# Center the logo perfectly
+col1, col2, col3 = st.columns([2, 1, 2])
 with col2:
-    st.image(logo, width=180)
+    st.image(logo, use_container_width=True)
 
-st.markdown("<h2 style='text-align:center;'> Short Term Loan Calculator</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:center;'>Short Term Loan Calculator</h2>", unsafe_allow_html=True)
 st.write("")
 
 # =======================
@@ -65,3 +66,4 @@ st.warning(f"Total Penalty: {total_penalty:,.2f}")
 
 st.write("## ✅ Final Amount to Pay")
 st.error(f"{final_amount:,.2f}")
+
