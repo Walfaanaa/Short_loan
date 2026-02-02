@@ -21,14 +21,15 @@ st.write("")
 # Loan Levels
 # =======================
 loan_levels = {
-    5000: {"interest_rate": 0.05, "due_days": 7},
-    10000: {"interest_rate": 0.10, "due_days": 15},
-    15000: {"interest_rate": 0.15, "due_days": 30}
+    2000: {"interest_rate": 0.05, "due_days": 7},
+    5000: {"interest_rate": 0.10, "due_days": 15},
+    10000: {"interest_rate": 0.15, "due_days": 25},
+    15000: {"interest_rate": 0.20, "due_days": 30}
 }
 
 st.write("### Enter Loan Details")
 
-loan_amount = st.selectbox("Select Loan Amount", [5000, 10000, 15000])
+loan_amount = st.selectbox("Select Loan Amount", [2000,5000, 10000, 15000])
 days_passed = st.number_input("Number of days since loan taken", min_value=0, step=1)
 
 # =======================
@@ -66,4 +67,5 @@ st.warning(f"Total Penalty: {total_penalty:,.2f}")
 
 st.write("## ✅ Final Amount to Pay")
 st.error(f"{final_amount:,.2f}")
+
 
