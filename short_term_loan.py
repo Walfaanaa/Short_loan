@@ -23,8 +23,8 @@ st.write("")
 loan_levels = {
     2000: {"interest_rate": 0.05, "due_days": 7},
     5000: {"interest_rate": 0.10, "due_days": 15},
-    10000: {"interest_rate": 0.15, "due_days": 25},
-    15000: {"interest_rate": 0.20, "due_days": 30}
+    10000: {"interest_rate": 0.15, "due_days": 30},
+    15000: {"interest_rate": 0.20, "due_days": 60}
 }
 
 st.write("### Enter Loan Details")
@@ -67,5 +67,6 @@ st.warning(f"Total Penalty: {total_penalty:,.2f}")
 
 st.write("## ✅ Final Amount to Pay")
 st.error(f"{final_amount:,.2f}")
+
 
 
