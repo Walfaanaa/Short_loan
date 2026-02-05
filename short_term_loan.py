@@ -31,7 +31,7 @@ st.write("### Enter Loan Details")
 
 loan_amount = st.selectbox(
     "Select Loan Amount",
-    [2000, 5000, 10000, 15000]
+    list(loan_levels.keys())
 )
 
 # =======================
@@ -42,23 +42,30 @@ business_date = st.date_input(
     value=date.today()
 )
 
+interest_rate = loan_levels[loan_amount]["interest_rate"]
+due_days = loan_levels[loan_amount]["due_days"]
+
+# Auto calculated due date (suggested)
+auto_due_date = business_date + timedelta(days=due_days)
+
+# 🔹 Manual Due Date (editable)
+due_date = st.date_input(
+    "Due Date (You can adjust if needed)",
+    value=auto_due_date
+)
+
 today = date.today()
 
 # =======================
 # Calculations
 # =======================
-interest_rate = loan_levels[loan_amount]["interest_rate"]
-due_days = loan_levels[loan_amount]["due_days"]
-
-due_date = business_date + timedelta(days=due_days)
-days_passed = (today - business_date).days
-
 interest = loan_amount * interest_rate
 total_due = loan_amount + interest
 
-late_days = max(0, days_passed - due_days)
+# Days late based on DUE DATE
+late_days = max(0, (today - due_date).days)
 
-# Penalty: 10% of loan amount per day late
+# Penalty: 10% of loan amount per late day
 penalty_per_day = loan_amount * 0.10
 total_penalty = late_days * penalty_per_day
 
@@ -71,11 +78,10 @@ st.write("## 📊 Loan Summary")
 
 st.success(f"Loan Amount: {loan_amount:,.2f}")
 st.info(f"Interest Rate: {interest_rate*100:.0f}%")
-st.info(f"Due Days: {due_days} days")
+st.info(f"Standard Due Days: {due_days} days")
 
 st.write(f"📅 **Business Date:** {business_date}")
 st.write(f"📅 **Due Date:** {due_date}")
-st.write(f"📆 **Days Passed:** {max(days_passed, 0)} days")
 
 st.write(f"Interest Amount: {interest:,.2f}")
 st.write(f"Total Due (Loan + Interest): {total_due:,.2f}")
