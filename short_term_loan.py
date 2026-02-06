@@ -1,6 +1,6 @@
 # ==============================
-# EGSA Short Loan - Streamlit App
-# Mobile-Friendly Version
+# EGSA Short Loan - Mobile Friendly
+# With Auto Penalty
 # ==============================
 
 import streamlit as st
@@ -10,7 +10,7 @@ from datetime import date, timedelta
 # PAGE CONFIG
 # ------------------------------
 st.set_page_config(
-    page_title="EGSA Short Loan",   # Mobile app name
+    page_title="EGSA Short Loan",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -27,51 +27,66 @@ footer {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 # ------------------------------
-# APP LOGIC STARTS HERE
+# APP TITLE
 # ------------------------------
-
 st.title("EGSA Short Loan App 📱")
-st.write("Welcome to the Short-Term Loan Management App for EGSA members!")
+st.write("Quick loan calculator for EGSA members with automatic penalty.")
 
 # ------------------------------
 # LOAN OPTIONS
 # ------------------------------
-
-# Predefined loan amounts
 loan_options = {
-    2000: 5,    # Amount: interest %
+    2000: 5,     # Amount: interest %
     5000: 5,
     10000: 10,
     15000: 15
 }
 
-# Predefined durations (days)
-duration_options = [7, 15, 30, 60]
+duration_options = {
+    2000: 7,     # default durations in days
+    5000: 15,
+    10000: 30,
+    15000: 60
+}
 
 # User selects loan amount
 loan_amount = st.selectbox("Select Loan Amount", options=list(loan_options.keys()))
-
-# Automatically set interest rate
 interest_rate = loan_options[loan_amount]
 st.write(f"Interest Rate: **{interest_rate}%**")
 
-# User selects duration
-duration_days = st.selectbox("Select Loan Duration (days)", options=duration_options)
+# Automatically assign duration
+loan_duration = duration_options[loan_amount]
+st.write(f"Loan Duration: **{loan_duration} days**")
 
 # User enters name
 name = st.text_input("Enter your name")
+
+# ------------------------------
+# PAY DATE INPUT
+# ------------------------------
+pay_date = st.date_input("Select Payment Date (leave empty if paying today)", value=date.today())
 
 # ------------------------------
 # CALCULATE LOAN
 # ------------------------------
 if st.button("Calculate Loan"):
 
-    # Calculate interest and total
+    # Calculate interest
     interest_amount = loan_amount * (interest_rate / 100)
     total_amount = loan_amount + interest_amount
 
-    # Calculate due date
-    due_date = date.today() + timedelta(days=duration_days)
+    # Due date
+    due_date = date.today() + timedelta(days=loan_duration)
+
+    # Check for penalty
+    if pay_date > due_date:
+        penalty = total_amount * 0.10  # 10% penalty
+        total_with_penalty = total_amount + penalty
+        st.warning(f"⚠️ Payment is late! 10% penalty applied: **{penalty:.2f}**")
+    else:
+        penalty = 0
+        total_with_penalty = total_amount
+        st.success("✅ Payment on time. No penalty applied.")
 
     # Display results
     st.markdown("### Loan Details")
@@ -79,8 +94,12 @@ if st.button("Calculate Loan"):
     st.write(f"Principal: **{loan_amount:.2f}**")
     st.write(f"Interest ({interest_rate}%): **{interest_amount:.2f}**")
     st.write(f"Total to Pay: **{total_amount:.2f}**")
-    st.write(f"Due Date: **{due_date}** days from today ({duration_days} days)")
+    st.write(f"Due Date: **{due_date}**")
+    if penalty > 0:
+        st.write(f"Total with Penalty (10%): **{total_with_penalty:.2f}**")
+    else:
+        st.write(f"Total Amount to Pay: **{total_with_penalty:.2f}**")
 
-# Optional Footer
+# Footer
 st.markdown("---")
 st.markdown("EGSA Short Loan App - Mobile Friendly Version")
