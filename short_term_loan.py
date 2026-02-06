@@ -1,91 +1,61 @@
+# ==============================
+# EGSA Short Loan - Streamlit App
+# Mobile-Friendly Version
+# ==============================
+
 import streamlit as st
-from PIL import Image
-import requests
-from datetime import date, timedelta
+from datetime import date
 
-# =======================
-# Top Center Logo
-# =======================
-logo_url = "https://raw.githubusercontent.com/Walfaanaa/Short_loan/main/EGSA.png"
-response = requests.get(logo_url, stream=True)
-logo = Image.open(response.raw)
-
-col1, col2, col3 = st.columns([2, 1, 2])
-with col2:
-    st.image(logo, use_container_width=True)
-
-st.markdown("<h2 style='text-align:center;'>Short Term Loan Calculator</h2>", unsafe_allow_html=True)
-st.write("")
-
-# =======================
-# Loan Levels
-# =======================
-loan_levels = {
-    2000: {"interest_rate": 0.05, "due_days": 7},
-    5000: {"interest_rate": 0.05, "due_days": 15},
-    10000: {"interest_rate": 0.10, "due_days": 30},
-    15000: {"interest_rate": 0.15, "due_days": 60}
-}
-
-st.write("### Enter Loan Details")
-
-loan_amount = st.selectbox(
-    "Select Loan Amount",
-    list(loan_levels.keys())
+# ------------------------------
+# PAGE CONFIG
+# ------------------------------
+st.set_page_config(
+    page_title="EGSA Short Loan",   # This controls the name on mobile install
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# =======================
-# Date Inputs
-# =======================
-business_date = st.date_input(
-    "Business Date (Loan Taken Date)",
-    value=date.today()
-)
+# ------------------------------
+# HIDE STREAMLIT DEFAULT UI
+# ------------------------------
+st.markdown("""
+<style>
+/* Hide Streamlit header & footer */
+header {visibility: hidden;}
+footer {visibility: hidden;}
 
-interest_rate = loan_levels[loan_amount]["interest_rate"]
-due_days = loan_levels[loan_amount]["due_days"]
+/* Optional: Make app full width on mobile */
+.css-18e3th9 {padding-top: 1rem;}
+</style>
+""", unsafe_allow_html=True)
 
-# Auto due date (for reference only)
-due_date = business_date + timedelta(days=due_days)
+# ------------------------------
+# APP LOGIC STARTS HERE
+# ------------------------------
 
-# 🔹 Manual Late Days Entry
-late_days = st.number_input(
-    "Late Days (Enter number of days after due date)",
-    min_value=0,
-    step=1,
-    value=0
-)
+st.title("EGSA Short Loan App 📱")
 
-# =======================
-# Calculations
-# =======================
-interest = loan_amount * interest_rate
-total_due = loan_amount + interest
+st.write("Welcome to the Short-Term Loan Management App for EGSA members!")
 
-# Penalty: 10% of loan amount per day late
-penalty_per_day = loan_amount * 0.10
-total_penalty = late_days * penalty_per_day
+# Example: Input loan data
+name = st.text_input("Enter your name")
+loan_amount = st.number_input("Loan Amount", min_value=0.0, value=1000.0, step=100.0)
+interest_rate = st.number_input("Interest Rate (%)", min_value=0.0, value=10.0, step=0.5)
+due_days = st.number_input("Loan duration (days)", min_value=1, value=30, step=1)
 
-final_amount = total_due + total_penalty
+# Calculate due date and interest
+if st.button("Calculate Loan"):
+    interest_amount = loan_amount * (interest_rate / 100)
+    total_amount = loan_amount + interest_amount
+    due_date = date.today().toordinal() + due_days
+    due_date = date.fromordinal(due_date)
+    
+    st.write(f"Loan for: **{name}**")
+    st.write(f"Principal: **{loan_amount:.2f}**")
+    st.write(f"Interest ({interest_rate}%): **{interest_amount:.2f}**")
+    st.write(f"Total to pay: **{total_amount:.2f}**")
+    st.write(f"Due date: **{due_date}**")
 
-# =======================
-# Results
-# =======================
-st.write("## 📊 Loan Summary")
-
-st.success(f"Loan Amount: {loan_amount:,.2f}")
-st.info(f"Interest Rate: {interest_rate*100:.0f}%")
-st.info(f"Due Days: {due_days} days")
-
-st.write(f"📅 **Business Date:** {business_date}")
-st.write(f"📅 **Due Date (Auto):** {due_date}")
-
-st.write(f"Interest Amount: {interest:,.2f}")
-st.write(f"Total Due (Loan + Interest): {total_due:,.2f}")
-
-st.warning(f"Late Days Entered: {late_days}")
-st.warning(f"Penalty Per Day (10% of Loan): {penalty_per_day:,.2f}")
-st.warning(f"Total Penalty: {total_penalty:,.2f}")
-
-st.write("## ✅ Final Amount to Pay")
-st.error(f"{final_amount:,.2f}")
+# Optional: Footer
+st.markdown("---")
+st.markdown("EGSA Short Loan App - Mobile Friendly Version")
