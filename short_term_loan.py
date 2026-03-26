@@ -36,17 +36,21 @@ st.write("Quick loan calculator for EGSA members with automatic penalty.")
 # LOAN OPTIONS
 # ------------------------------
 loan_options = {
-    2000: 5,     # Amount: interest %
-    5000: 5,
-    10000: 10,
-    15000: 15
+    5000: 5,     # Amount: interest %
+    10000: 5,
+    15000: 10,
+    25000: 20,
+    50000:90,
+    100000:180
 }
 
 duration_options = {
-    2000: 7,     # default durations in days
-    5000: 15,
-    10000: 30,
-    15000: 60
+    5000: 15,     # default durations in days
+    10000: 20,
+    15000: 30,
+    25000: 60,
+    50000: 90,
+    100000: 180
 }
 
 # User selects loan amount
